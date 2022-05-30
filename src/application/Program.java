@@ -19,7 +19,6 @@ public class Program {
 		List<ChessPiece> captured = new ArrayList<>();
 		
 		while (!chessMatch.getCheckMate()) {
-			
 			try {
 				
 			UI.clearScreen();
@@ -40,6 +39,12 @@ public class Program {
 			ChessPiece capturedPiece = chessMatch.performChessMove(source, target);
 			if (capturedPiece != null) {
 				captured.add(capturedPiece);
+			}
+			
+			if (chessMatch.getPromoted() != null) {
+				System.out.println("Enter piece for promotion (B/N/R/Q)");
+				String type = sc.nextLine();
+				chessMatch.replacePromotedPiece(type);
 			}
 			
 			
