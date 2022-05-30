@@ -1,9 +1,11 @@
 package application;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
-import boardgame.BoardException;
 import chess.ChessException;
 import chess.ChessMatch;
 import chess.ChessPiece;
@@ -15,15 +17,13 @@ public class Program {
 		
 		Scanner sc = new Scanner(System.in);
 		ChessMatch chessMatch = new ChessMatch();
+		List<ChessPiece> captured = new ArrayList<>();
 		
-		while (true) {
-			
+		while (!chessMatch.getCheckMate()) {
 			try {
-			
+				
 			UI.clearScreen();
-			
-			UI.printBoard(chessMatch.getPieces());
-			System.out.println();
+			UI.printMatch(chessMatch, captured);
 			System.out.println();
 			System.out.print("Souce: ");
 			ChessPosition source = UI.readChessPositon(sc);
@@ -38,6 +38,22 @@ public class Program {
 			ChessPosition target = UI.readChessPositon(sc);
 			
 			ChessPiece capturedPiece = chessMatch.performChessMove(source, target);
+			if (capturedPiece != null) {
+				captured.add(capturedPiece);
+			}
+			
+			if (chessMatch.getPromoted() != null) {
+				System.out.println("Enter piece for promotion (B/N/R/Q)");
+				String type = sc.nextLine().toUpperCase();
+				while (!type.equals("B") && !type.equals("N") && !type.equals("R") & !type.equals("Q")) {
+					System.out.println("Invalid value! Enter piece for promotion (B/N/R/Q)");
+					type = sc.nextLine().toUpperCase();
+				}
+				chessMatch.replacePromotedPiece(type);
+			}
+			
+			
+			
 			System.out.println();
 			}
 			catch (ChessException e) {
@@ -50,6 +66,8 @@ public class Program {
 			}
 						
 		}
+		UI.clearScreen();
+		UI.printMatch(chessMatch, captured);
 		
 	}
 
